@@ -7,7 +7,8 @@ Aplicação backend em Elixir para consulta concorrente de previsão do tempo na
 ## Funcionalidades
 
 * **Consumo de API Externa**: Integração com a API pública Open-Meteo (`GET /v1/forecast`).
-* **Processamento Concorrente**: Execução paralela sem bloqueios para múltiplas cidades utilizando `Task.async_stream/3` do Elixir/BEAM.
+* **Modelo de Atores & DynamicSupervisor**: Concorrência baseada no Modelo de Atores OTP com `DynamicSupervisor` (`WeatherSupervisor`) e `GenServer` (`WeatherCoordinator` e `WeatherWorker`).
+* **Resiliência OTP**: Isolamento de processos e ciclo de vida gerenciado por supervisão dinâmica com estratégias `:one_for_one`.
 * **Cálculo de Média**: Função pura para extrair os 6 primeiros dias de `temperature_2m_max` e calcular a média simples arredondada em 1 casa decimal.
 * **Saída Formatada**: Apresentação dos resultados na saída padrão no formato exigido.
 * **Suíte de Testes com Mocks**: Isolamento completo de chamadas de rede nos testes utilizando `Mox` (baseado em `Behaviour`).
@@ -61,7 +62,7 @@ Curitiba: 22.8°C
 
 ## Como Executar a Suíte de Testes
 
-Para rodar todos os testes unitários e de integração:
+Para rodar todos os testes unitários, de concorrência e do sistema de atores:
 ```bash
 mix test
 ```
@@ -79,50 +80,29 @@ mix format --check-formatted
 meteo_analysis/
 ├── lib/
 │   ├── meteo_analysis/
-│   │   ├── city.ex          # Struct com coordenadas de SP, BH e Curitiba
-│   │   ├── calculator.ex    # Função pura de cálculo estatístico de média
+│   │   ├── application.ex         # Aplicação OTP e Árvore de Supervisão Raiz
+│   │   ├── city.ex                # Struct com coordenadas de SP, BH e Curitiba
+│   │   ├── calculator.ex          # Função pura de cálculo estatístico de média
 │   │   ├── client/
-│   │   │   ├── behaviour.ex # Behaviour do cliente HTTP
-│   │   │   └── open_meteo.ex# Implementação real da chamada Open-Meteo via Req
-│   │   ├── weather.ex       # Orquestrador de concorrência com Task.async_stream
-│   │   └── formatter.ex     # Formatação gráfica do texto de saída
-│   └── meteo_analysis.ex    # Ponto de entrada principal (MeteoAnalysis.run/0)
+│   │   │   ├── behaviour.ex       # Behaviour do cliente HTTP
+│   │   │   └── open_meteo.ex      # Implementação real da chamada Open-Meteo via Req
+│   │   ├── weather_supervisor.ex  # DynamicSupervisor de Atores Trabalhadores
+│   │   ├── weather_worker.ex      # GenServer Ator Trabalhador por cidade
+│   │   ├── weather_coordinator.ex # GenServer Ator Coordenador de requisições
+│   │   ├── weather.ex             # Orquestrador delegador para o Sistema de Atores
+│   │   └── formatter.ex           # Formatação do texto de saída
+│   └── meteo_analysis.ex          # Ponto de entrada principal (MeteoAnalysis.run/0)
 ├── test/
 │   ├── meteo_analysis/
 │   │   ├── city_test.exs
 │   │   ├── calculator_test.exs
 │   │   ├── client/open_meteo_test.exs
 │   │   ├── weather_test.exs
+│   │   ├── actor_system_test.exs
 │   │   └── formatter_test.exs
 │   ├── meteo_analysis_test.exs
-│   └── test_helper.exs     # Definição do Mock com Mox
-├── KANBAN.md               # Quadro Kanban com as 16 tarefas granulares
-├── REQUIREMENTS.md         # Documentação e Requisitos Técnicos
+│   └── test_helper.exs           # Definição do Mock com Mox
+├── KANBAN.md                     # Quadro Kanban com as tarefas granulares
+├── REQUIREMENTS.md               # Documentação e Requisitos Técnicos
 └── README.md
-```
-
----
-
-## Histórico de Commits (Git Event Store)
-
-O repositório foi construído seguindo rigorosamente o ciclo TDD e Conventional Commits:
-
-```text
-8927e44 docs: update KANBAN.md with all tasks completed
-32748ad docs: update REQUIREMENTS.md and README.md
-c063de7 feat(cli): connect entrypoint MeteoAnalysis.run/0
-412555c feat(formatter): implement output console formatter [GREEN]
-3012c2b test(formatter): add test for output string formatting [RED]
-9dd99af refactor(weather): improve error handling with pattern matching and timeouts [REFACTOR]
-7cf690e feat(weather): implement process_cities/2 using Task.async_stream [GREEN]
-7d74b77 test(weather): add test for concurrent processing of cities [RED]
-fdd5f52 feat(client): implement OpenMeteo client using Req [GREEN]
-89bfa20 test(client): define client behaviour and contract test with Mox [RED]
-86ac86e refactor(calculator): optimize pipeline using Enum.take and Float.round [REFACTOR]
-d0d98c2 feat(calculator): implement calculate_average/2 [GREEN]
-a404f6f test(calculator): add tests for average calculation of max temps [RED]
-608dcb0 feat(city): implement City struct and default coordinates [GREEN]
-46476d8 test(city): add test for default cities struct [RED]
-29f294e chore(deps): add req, jason and mox dependencies
-6f0a7f8 chore: initialize elixir project with mix new
 ```
