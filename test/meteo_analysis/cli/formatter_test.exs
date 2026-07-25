@@ -40,7 +40,10 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
       assert output =~ "CIDADE: São Paulo"
       assert output =~ "Latitude: -23.55 | Longitude: -46.63"
       assert output =~ "[28.5°C, 29.3°C, 27.1°C, 26.8°C, 29.0°C, 30.3°C]"
-      assert output =~ "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
+
+      assert output =~
+               "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
+
       assert output =~ "São Paulo: 28.5°C"
     end
 
