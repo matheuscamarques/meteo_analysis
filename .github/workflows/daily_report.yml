@@ -1,0 +1,56 @@
+name: Daily Weather Forecast Report
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-report:
+    name: Generate Daily Weather HUD Report
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Erlang and Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.17'
+        otp-version: '26'
+
+    - name: Restore Dependencies Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+
+    - name: Install Dependencies
+      run: mix deps.get
+
+    - name: Run mix meteo and Save Output File
+      run: |
+        mkdir -p reports
+        TODAY=$(date +'%Y-%m-%d')
+        REPORT_PATH="reports/forecast_${TODAY}.txt"
+        mix meteo > "$REPORT_PATH"
+        cat "$REPORT_PATH"
+
+    - name: Upload Report Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: daily-weather-report
+        path: reports/
+        retention-days: 90
+
+    - name: Commit Report to Repository
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "docs(report): add daily weather forecast report"
+        file_pattern: "reports/*.txt"
