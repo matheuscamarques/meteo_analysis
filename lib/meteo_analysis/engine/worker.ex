@@ -15,7 +15,7 @@ defmodule MeteoAnalysis.Engine.Worker do
 
   3. **Consulta à API e Cálculo (`handle_cast/2`)**:
      - O worker faz a chamada HTTP usando o cliente injetado (`state.client.fetch_forecast/1`).
-     - Calcula a temperatura máxima média dos 6 dias usando `Calculator.calculate_details/2`.
+     - Calcula a temperatura máxima média dos N dias definidos na configuração (`forecast_days`) usando `Calculator.calculate_details/2`.
      - Envia a mensagem de resposta `{:ok, city_name, average, details}` diretamente para o Coordenador.
 
   4. **Encerramento Limpo (`{:stop, :normal, state}`)**:
@@ -53,9 +53,11 @@ defmodule MeteoAnalysis.Engine.Worker do
 
   @impl true
   def handle_cast(:execute_fetch, state) do
+    forecast_days = Application.get_env(:meteo_analisys, :forecast_days, 6)
+
     result =
       with {:ok, temps} <- state.client.fetch_forecast(state.city),
-           {:ok, details} <- Calculator.calculate_details(temps, 6) do
+           {:ok, details} <- Calculator.calculate_details(temps, forecast_days) do
         {:ok, state.city.name, details.average,
          %{
            latitude: state.city.latitude,

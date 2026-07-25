@@ -13,7 +13,7 @@ defmodule MeteoAnalysis do
   """
   def run(
         cities \\ City.default_cities(),
-        client \\ MeteoAnalysis.Clients.OpenMeteo
+        client \\ nil
       ) do
     start_time = System.monotonic_time(:microsecond)
     results = Weather.process_cities(cities, client)

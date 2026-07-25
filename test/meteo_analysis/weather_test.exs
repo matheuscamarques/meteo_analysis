@@ -41,7 +41,7 @@ defmodule MeteoAnalysis.WeatherTest do
              end)
     end
 
-    test "funciona com a lista de cidades padrao quando invocado apenas com o cliente" do
+    test "funciona com a lista de cidades padrao quando invocado com o cliente mock" do
       expect(ClientMock, :fetch_forecast, 3, fn
         %City{name: "São Paulo"} -> {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
         %City{name: "Belo Horizonte"} -> {:ok, [27.0, 28.0, 27.5, 28.2, 27.8, 28.3]}
@@ -52,8 +52,8 @@ defmodule MeteoAnalysis.WeatherTest do
       assert length(results) == 3
     end
 
-    test "funciona sem argumentos invocando as cidades padrao e o cliente HTTP oficial" do
-      results = Weather.process_cities()
+    test "funciona invocando as cidades padrao e o cliente HTTP oficial OpenMeteo" do
+      results = Weather.process_cities(City.default_cities(), MeteoAnalysis.Clients.OpenMeteo)
       assert length(results) == 3
     end
 

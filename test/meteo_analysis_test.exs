@@ -37,8 +37,8 @@ defmodule MeteoAnalysisTest do
     assert output =~ "METEO ANALYSIS - TERMINAL HUD"
   end
 
-  test "run sem argumentos executa com cidades padrao e API real" do
-    output = MeteoAnalysis.run()
+  test "run com cliente HTTP real da API OpenMeteo" do
+    output = MeteoAnalysis.run(City.default_cities(), MeteoAnalysis.Clients.OpenMeteo)
     assert output =~ "METEO ANALYSIS - TERMINAL HUD"
   end
 end

@@ -9,15 +9,23 @@ defmodule MeteoAnalysis.Weather do
 
   @doc """
   Consulta concorrentemente a previsão do tempo de uma lista de cidades e calcula
-  a temperatura máxima média para os próximos 6 dias utilizando o Modelo de Atores OTP.
+  a temperatura máxima média para os próximos dias utilizando o Modelo de Atores OTP.
   """
-  @spec process_cities([City.t()], module()) :: [
+  @spec process_cities([City.t()], module() | nil) :: [
           {:ok, String.t(), float()} | {:error, String.t(), term()}
         ]
   def process_cities(
         cities \\ City.default_cities(),
-        client \\ MeteoAnalysis.Clients.OpenMeteo
+        client \\ nil
       ) do
-    Coordinator.process_cities(cities, client)
+    target_client =
+      client ||
+        Application.get_env(
+          :meteo_analisys,
+          :http_client,
+          MeteoAnalysis.Clients.OpenMeteo
+        )
+
+    Coordinator.process_cities(cities, target_client)
   end
 end

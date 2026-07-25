@@ -56,14 +56,29 @@ defmodule MeteoAnalysis.Engine.Coordinator do
 
   ## Parâmetros:
     - `cities`: Lista de structs `MeteoAnalysis.Domain.City`.
-    - `client`: Módulo cliente HTTP a ser utilizado (padrão: `MeteoAnalysis.Clients.OpenMeteo`).
-    - `timeout`: Tempo limite em milissegundos para aguardar todas as respostas (padrão: 10.000 ms).
+    - `client`: Módulo cliente HTTP a ser utilizado.
+    - `timeout`: Tempo limite em milissegundos para aguardar todas as respostas (padrão lido das configs).
   """
-  @spec process_cities([MeteoAnalysis.Domain.City.t()], module(), pos_integer()) :: [
+  @spec process_cities([MeteoAnalysis.Domain.City.t()], module(), pos_integer() | nil) :: [
           {:ok, String.t(), float()} | {:error, String.t(), term()}
         ]
-  def process_cities(cities, client \\ MeteoAnalysis.Clients.OpenMeteo, timeout \\ 10_000) do
-    GenServer.call(__MODULE__, {:process_cities, cities, client, timeout}, timeout + 2_000)
+  def process_cities(cities, client \\ nil, timeout \\ nil) do
+    target_client =
+      client ||
+        Application.get_env(
+          :meteo_analisys,
+          :http_client,
+          MeteoAnalysis.Clients.OpenMeteo
+        )
+
+    target_timeout =
+      timeout || Application.get_env(:meteo_analisys, :coordinator_timeout, 10_000)
+
+    GenServer.call(
+      __MODULE__,
+      {:process_cities, cities, target_client, target_timeout},
+      target_timeout + 2_000
+    )
   end
 
   # --- Callbacks do GenServer ---
@@ -76,14 +91,6 @@ defmodule MeteoAnalysis.Engine.Coordinator do
 
   @doc """
   Callback acionado quando `GenServer.call` envia `{:process_cities, cities, client, timeout}`.
-
-  Lógica:
-  1. Cria uma referência única (`req_ref`) para rastrear as respostas deste lote especifico.
-  2. Dispara a criação de um processo trabalhador (`Worker`) para cada cidade via `Supervisor`.
-  3. Registra as permissões de Mock (Mox) se estiver em ambiente de teste.
-  4. Manda uma mensagem de início (`execute_fetch`) para cada worker.
-  5. Configura o temporizador de timeout com `Process.send_after`.
-  6. Armazena a requisição no estado com `{:noreply, state}` sem responder ao cliente imediatamente.
   """
   @impl true
   def handle_call({:process_cities, cities, client, timeout}, {caller_pid, _ref} = from, state) do
@@ -111,10 +118,6 @@ defmodule MeteoAnalysis.Engine.Coordinator do
 
   @doc """
   Callback de mensagens da caixa de entrada (mailbox).
-
-  Trata duas mensagens:
-  1. `{:worker_result, req_ref, result}`: Mensagem assíncrona enviada por um worker ao concluir a requisição.
-  2. `{:request_timeout, req_ref}`: Mensagem agendada disparada quando o tempo limite de resposta expira.
   """
   @impl true
   def handle_info({:worker_result, req_ref, result}, state) do
