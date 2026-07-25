@@ -1,10 +1,10 @@
-defmodule MeteoAnalysis.FormatterTest do
+defmodule MeteoAnalysis.CLI.FormatterTest do
   use ExUnit.Case, async: true
 
-  alias MeteoAnalysis.Formatter
+  alias MeteoAnalysis.CLI.Formatter
 
   describe "format_result/1" do
-    test "formata o resultado de sucesso no padrão exigido" do
+    test "formata o resultado de sucesso no padrao exigido" do
       assert Formatter.format_result({:ok, "São Paulo", 28.5}) == "São Paulo: 28.5°C"
       assert Formatter.format_result({:ok, "Belo Horizonte", 27.8}) == "Belo Horizonte: 27.8°C"
       assert Formatter.format_result({:ok, "Curitiba", 22.1}) == "Curitiba: 22.1°C"

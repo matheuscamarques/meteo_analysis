@@ -1,10 +1,10 @@
-defmodule MeteoAnalysis.WeatherWorker do
+defmodule MeteoAnalysis.Engine.Worker do
   @moduledoc """
   Ator Trabalhador (Worker Actor) implementado como GenServer temporario supervisionado.
   """
   use GenServer, restart: :temporary
 
-  alias MeteoAnalysis.Calculator
+  alias MeteoAnalysis.Domain.Calculator
 
   @doc """
   Inicia a execução do ator trabalhador com a tupla {city, client, coordinator_pid, req_ref}.

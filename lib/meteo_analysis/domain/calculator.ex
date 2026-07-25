@@ -1,4 +1,4 @@
-defmodule MeteoAnalysis.Calculator do
+defmodule MeteoAnalysis.Domain.Calculator do
   @moduledoc """
   Módulo de funções puras para cálculos estatísticos da aplicação.
   """
@@ -7,7 +7,8 @@ defmodule MeteoAnalysis.Calculator do
   Calcula a média aritmética simples dos primeiros `count` elementos de uma lista de números.
   Retorna `{:ok, media}` arredondada em 1 casa decimal ou `{:error, :insufficient_data}`.
   """
-  @spec calculate_average([number()], pos_integer()) :: {:ok, float()} | {:error, :insufficient_data}
+  @spec calculate_average([number()], pos_integer()) ::
+          {:ok, float()} | {:error, :insufficient_data}
   def calculate_average(temperatures, count \\ 6)
 
   def calculate_average(temperatures, count)

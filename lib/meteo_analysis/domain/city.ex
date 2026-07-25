@@ -1,4 +1,4 @@
-defmodule MeteoAnalysis.City do
+defmodule MeteoAnalysis.Domain.City do
   @moduledoc """
   Representa uma cidade com nome e coordenadas geográficas (latitude e longitude).
   """

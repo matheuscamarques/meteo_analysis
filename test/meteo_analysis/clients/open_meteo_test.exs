@@ -1,9 +1,10 @@
-defmodule MeteoAnalysis.Client.OpenMeteoTest do
+defmodule MeteoAnalysis.Clients.OpenMeteoTest do
   use ExUnit.Case, async: true
   import Mox
 
-  alias MeteoAnalysis.City
-  alias MeteoAnalysis.Client.OpenMeteo
+  alias MeteoAnalysis.Domain.City
+  alias MeteoAnalysis.Clients.OpenMeteo
+  alias MeteoAnalysis.Clients.ClientMock
 
   setup :verify_on_exit!
 
@@ -11,11 +12,11 @@ defmodule MeteoAnalysis.Client.OpenMeteoTest do
     test "retorna a lista de temperaturas quando o mock responde com sucesso" do
       city = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
 
-      expect(MeteoAnalysis.ClientMock, :fetch_forecast, fn ^city ->
+      expect(ClientMock, :fetch_forecast, fn ^city ->
         {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
       end)
 
-      assert {:ok, temps} = MeteoAnalysis.ClientMock.fetch_forecast(city)
+      assert {:ok, temps} = ClientMock.fetch_forecast(city)
       assert length(temps) == 6
     end
   end

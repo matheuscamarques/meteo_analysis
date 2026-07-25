@@ -1,11 +1,11 @@
-defmodule MeteoAnalysis.Client.OpenMeteo do
+defmodule MeteoAnalysis.Clients.OpenMeteo do
   @moduledoc """
   Implementação real do cliente HTTP para consumo da API pública Open-Meteo.
   """
 
-  @behaviour MeteoAnalysis.Client.Behaviour
+  @behaviour MeteoAnalysis.Clients.Behaviour
 
-  alias MeteoAnalysis.City
+  alias MeteoAnalysis.Domain.City
 
   @base_url "https://api.open-meteo.com/v1/forecast"
 

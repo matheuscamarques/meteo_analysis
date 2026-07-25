@@ -1,19 +1,19 @@
-defmodule MeteoAnalysis.WeatherCoordinator do
+defmodule MeteoAnalysis.Engine.Coordinator do
   @moduledoc """
   Ator Coordenador responsavel por gerenciar atores trabalhadores dinamicos e agregar respostas.
   """
   use GenServer
 
-  alias MeteoAnalysis.{WeatherSupervisor, WeatherWorker}
+  alias MeteoAnalysis.Engine.{Supervisor, Worker}
 
   def start_link(init_arg \\ []) do
     GenServer.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
 
   @doc """
-  Processa uma lista de cidades enviando trabalhos para o DynamicSupervisor e aguardando respostas.
+  Processa uma lista de cidades enviando trabalhos para o Supervisor dinamico e aguardando respostas.
   """
-  def process_cities(cities, client \\ MeteoAnalysis.Client.OpenMeteo, timeout \\ 10_000) do
+  def process_cities(cities, client \\ MeteoAnalysis.Clients.OpenMeteo, timeout \\ 10_000) do
     GenServer.call(__MODULE__, {:process_cities, cities, client, timeout}, timeout + 2_000)
   end
 
@@ -28,9 +28,9 @@ defmodule MeteoAnalysis.WeatherCoordinator do
     coordinator_pid = self()
 
     Enum.each(cities, fn city ->
-      {:ok, worker_pid} = WeatherSupervisor.start_worker(city, client, coordinator_pid, req_ref)
+      {:ok, worker_pid} = Supervisor.start_worker(city, client, coordinator_pid, req_ref)
       allow_mox_if_needed(client, caller_pid, worker_pid)
-      WeatherWorker.execute_fetch(worker_pid)
+      Worker.execute_fetch(worker_pid)
     end)
 
     timer_ref = Process.send_after(self(), {:request_timeout, req_ref}, timeout)

@@ -7,8 +7,8 @@ defmodule MeteoAnalysis.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      MeteoAnalysis.WeatherSupervisor,
-      MeteoAnalysis.WeatherCoordinator
+      MeteoAnalysis.Engine.Supervisor,
+      MeteoAnalysis.Engine.Coordinator
     ]
 
     opts = [strategy: :one_for_one, name: MeteoAnalysis.Supervisor]

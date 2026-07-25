@@ -1,4 +1,4 @@
-defmodule MeteoAnalysis.WeatherSupervisor do
+defmodule MeteoAnalysis.Engine.Supervisor do
   @moduledoc """
   Supervisor Dinamico responsavel por instanciar e gerenciar atores trabalhadores em tempo de execução.
   """
@@ -17,7 +17,7 @@ defmodule MeteoAnalysis.WeatherSupervisor do
   Inicia dinamicamente um novo ator trabalhador sob supervisão.
   """
   def start_worker(city, client, coordinator_pid, req_ref) do
-    spec = {MeteoAnalysis.WeatherWorker, {city, client, coordinator_pid, req_ref}}
+    spec = {MeteoAnalysis.Engine.Worker, {city, client, coordinator_pid, req_ref}}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 end

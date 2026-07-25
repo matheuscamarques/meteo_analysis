@@ -1,2 +1,2 @@
 ExUnit.start()
-Mox.defmock(MeteoAnalysis.ClientMock, for: MeteoAnalysis.Client.Behaviour)
+Mox.defmock(MeteoAnalysis.Clients.ClientMock, for: MeteoAnalysis.Clients.Behaviour)

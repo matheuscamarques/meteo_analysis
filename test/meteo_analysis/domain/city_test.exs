@@ -1,10 +1,10 @@
-defmodule MeteoAnalysis.CityTest do
+defmodule MeteoAnalysis.Domain.CityTest do
   use ExUnit.Case, async: true
 
-  alias MeteoAnalysis.City
+  alias MeteoAnalysis.Domain.City
 
   describe "default_cities/0" do
-    test "retorna a lista com as 3 cidades padrão e suas coordenadas corretas" do
+    test "retorna a lista com as 3 cidades padrao e suas coordenadas corretas" do
       cities = City.default_cities()
 
       assert length(cities) == 3

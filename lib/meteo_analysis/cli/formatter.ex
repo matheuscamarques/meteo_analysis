@@ -1,4 +1,4 @@
-defmodule MeteoAnalysis.Formatter do
+defmodule MeteoAnalysis.CLI.Formatter do
   @moduledoc """
   Formatador para exibição dos resultados de temperatura no terminal.
   """

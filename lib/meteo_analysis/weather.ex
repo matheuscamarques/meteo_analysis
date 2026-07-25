@@ -1,10 +1,11 @@
 defmodule MeteoAnalysis.Weather do
   @moduledoc """
   Orquestrador que delega o processamento concorrente ao Sistema de Atores OTP
-  gerenciado pelo WeatherCoordinator e pelo DynamicSupervisor WeatherSupervisor.
+  gerenciado pelo Coordinator e pelo Supervisor dinamico.
   """
 
-  alias MeteoAnalysis.{City, WeatherCoordinator}
+  alias MeteoAnalysis.Domain.City
+  alias MeteoAnalysis.Engine.Coordinator
 
   @doc """
   Consulta concorrentemente a previsão do tempo de uma lista de cidades e calcula
@@ -15,8 +16,8 @@ defmodule MeteoAnalysis.Weather do
         ]
   def process_cities(
         cities \\ City.default_cities(),
-        client \\ MeteoAnalysis.Client.OpenMeteo
+        client \\ MeteoAnalysis.Clients.OpenMeteo
       ) do
-    WeatherCoordinator.process_cities(cities, client)
+    Coordinator.process_cities(cities, client)
   end
 end

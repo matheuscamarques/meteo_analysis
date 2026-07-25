@@ -2,13 +2,15 @@ defmodule MeteoAnalysis.WeatherTest do
   use ExUnit.Case, async: true
   import Mox
 
-  alias MeteoAnalysis.{City, Weather, ClientMock}
+  alias MeteoAnalysis.Domain.City
+  alias MeteoAnalysis.Weather
+  alias MeteoAnalysis.Clients.ClientMock
 
   setup :set_mox_from_context
   setup :verify_on_exit!
 
   describe "process_cities/2" do
-    test "processa concorrentemente todas as cidades e calcula a temperatura máxima média" do
+    test "processa concorrentemente todas as cidades e calcula a temperatura maxima media" do
       sp = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
       bh = %City{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94}
       cur = %City{name: "Curitiba", latitude: -25.43, longitude: -49.27}
