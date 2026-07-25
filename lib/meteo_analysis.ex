@@ -9,14 +9,18 @@ defmodule MeteoAnalysis do
 
   @doc """
   Ponto de entrada principal da aplicação. Consulta a previsão das cidades padrão,
-  calcula as médias e exibe a saída formatada no terminal.
+  calcula as médias, mede o tempo de execução e exibe a saída formatada no terminal.
   """
   def run(
         cities \\ City.default_cities(),
         client \\ MeteoAnalysis.Clients.OpenMeteo
       ) do
+    start_time = System.monotonic_time(:microsecond)
     results = Weather.process_cities(cities, client)
-    output = Formatter.format_all(results)
+    elapsed_us = System.monotonic_time(:microsecond) - start_time
+    execution_time_ms = elapsed_us / 1_000.0
+
+    output = Formatter.format_all(results, execution_time_ms)
     IO.puts(output)
     output
   end

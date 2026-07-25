@@ -16,8 +16,8 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
     end
   end
 
-  describe "format_all/1 com HUD" do
-    test "formata o painel HUD completo e inclui o resumo dos resultados" do
+  describe "format_all/2 com HUD, Data de Hoje e Tempo de Execução" do
+    test "formata o painel HUD completo contendo a data atual e o tempo de execucao" do
       details = %{
         latitude: -23.55,
         longitude: -46.63,
@@ -30,9 +30,12 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
         {:ok, "São Paulo", 28.5, details}
       ]
 
-      output = Formatter.format_all(results)
+      output = Formatter.format_all(results, 150.25)
+      today_str = Date.utc_today() |> Calendar.strftime("%d/%m/%Y")
 
       assert output =~ "METEO ANALYSIS - TERMINAL HUD"
+      assert output =~ "Data de Execução  : #{today_str}"
+      assert output =~ "Tempo de Execução : 150.25 ms"
       assert output =~ "CIDADE: São Paulo"
       assert output =~ "Latitude: -23.55 | Longitude: -46.63"
       assert output =~ "[28.5°C, 29.3°C, 27.1°C, 26.8°C, 29.0°C, 30.3°C]"

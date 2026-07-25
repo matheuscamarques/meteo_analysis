@@ -76,14 +76,26 @@ defmodule MeteoAnalysis.CLI.Formatter do
   end
 
   @doc """
-  Formata a saída completa incluindo o cabeçalho HUD, detalhamento por cidade e o resumo.
+  Formata a saída completa incluindo a data de execução, tempo de resposta em ms,
+  cabeçalho HUD, detalhamento por cidade e o resumo.
   """
-  @spec format_all([term()]) :: String.t()
-  def format_all(results) when is_list(results) do
+  @spec format_all([term()], number() | nil) :: String.t()
+  def format_all(results, execution_time_ms \\ nil) when is_list(results) do
+    today_str = Date.utc_today() |> Calendar.strftime("%d/%m/%Y")
+
+    exec_time_str =
+      if execution_time_ms do
+        "#{Float.round(execution_time_ms * 1.0, 2)} ms"
+      else
+        "N/A"
+      end
+
     header = """
     ================================================================================
                            METEO ANALYSIS - TERMINAL HUD                            
     ================================================================================
+     Data de Execução  : #{today_str}                                             
+     Tempo de Execução : #{exec_time_str}                                         
      Fonte de Dados    : Open-Meteo API (https://open-meteo.com)                    
      Modelo Concorrente: Atores OTP (DynamicSupervisor + GenServers)               
      Janela Analisada  : 6 Dias (Hoje + 5 Dias)                                    
