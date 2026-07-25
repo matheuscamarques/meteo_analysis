@@ -12,12 +12,13 @@ defmodule MeteoAnalysis.Calculator do
 
   def calculate_average(temperatures, count)
       when is_list(temperatures) and is_integer(count) and count > 0 do
-    if length(temperatures) >= count do
-      slice = Enum.take(temperatures, count)
-      avg = Enum.sum(slice) / count
-      {:ok, Float.round(avg, 1)}
-    else
-      {:error, :insufficient_data}
+    case Enum.take(temperatures, count) do
+      slice when length(slice) == count ->
+        avg = Enum.sum(slice) / count
+        {:ok, Float.round(avg, 1)}
+
+      _ ->
+        {:error, :insufficient_data}
     end
   end
 
