@@ -154,16 +154,16 @@ meteo_analysis/
 ### 5.1. O Ciclo TDD
 O desenvolvimento segue rigorosamente os três passos do TDD para cada unidade funcional:
 
-1. 🔴 **RED (Teste Falhando)**: Escreve-se o teste unitário/integração com a asserção do comportamento esperado antes de existir a implementação do código de produção. Executa-se `mix test` comprovando que o teste falha (compilação ou asserção).
-2. 🟢 **GREEN (Teste Passando)**: Implementa-se a menor quantidade de código de produção suficiente para fazer o teste passar.
-3. 🔵 **REFACTOR (Refatoração)**: Melhora-se a estrutura, legibilidade e performance do código (eliminando duplicações e aplicando idiotismos funcionais do Elixir), mantendo a suíte de testes passando.
+1. **RED (Teste Falhando)**: Escreve-se o teste unitário/integração com a asserção do comportamento esperado antes de existir a implementação do código de produção. Executa-se `mix test` comprovando que o teste falha (compilação ou asserção).
+2. **GREEN (Teste Passando)**: Implementa-se a menor quantidade de código de produção suficiente para fazer o teste passar.
+3. **REFACTOR (Refatoração)**: Melhora-se a estrutura, legibilidade e performance do código (eliminando duplicações e aplicando idiotismos funcionais do Elixir), mantendo a suíte de testes passando.
 
 ```mermaid
 graph TD
-    A["🔴 RED: Escrever teste falhando em test/"] --> B["`mix test` falha (Esperado)"]
-    B --> C["🟢 GREEN: Implementar código mínimo em lib/"]
+    A["RED: Escrever teste falhando em test/"] --> B["`mix test` falha (Esperado)"]
+    B --> C["GREEN: Implementar código mínimo em lib/"]
     C --> D["`mix test` passa (Sucesso)"]
-    D --> E["🔵 REFACTOR: Refatorar código mantendo testes verdes"]
+    D --> E["REFACTOR: Refatorar código mantendo testes verdes"]
     E --> F["Commit Git Semântico do Evento"]
     F --> A
 ```
@@ -190,7 +190,7 @@ Formatos aceitos:
 
 ### 6.3. Cronograma de Commits como Eventos (Roteiro Completo)
 
-Abaixo está o roteiro de eventos de commits a ser executado durante o desenvolvimento:
+Abaixo está o roteiro de eventos de commits executado durante o desenvolvimento:
 
 | Evento # | Fase TDD | Commit Message (Conventional Commit) | Descrição da Ação no Código |
 | :---: | :---: | :--- | :--- |

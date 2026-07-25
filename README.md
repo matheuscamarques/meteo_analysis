@@ -1,21 +1,21 @@
 # MeteoAnalysis - Backend Elixir (Avaliação Técnica)
 
-Aplicação backend em **Elixir** para consulta concorrente de previsão do tempo nas cidades de **São Paulo**, **Belo Horizonte** e **Curitiba** utilizando a API pública [Open-Meteo](https://open-meteo.com/), com cálculo da temperatura máxima média para os próximos 6 dias (hoje + 5 dias).
+Aplicação backend em Elixir para consulta concorrente de previsão do tempo nas cidades de São Paulo, Belo Horizonte e Curitiba utilizando a API pública Open-Meteo, com cálculo da temperatura máxima média para os próximos 6 dias (hoje + 5 dias).
 
 ---
 
-## 🎯 Funcionalidades
+## Funcionalidades
 
-* 🌐 **Consumo de API Externa**: Integração com a API pública Open-Meteo (`GET /v1/forecast`).
-* ⚡ **Processamento Concorrente**: Execução paralela sem bloqueios para múltiplas cidades utilizando `Task.async_stream/3` do Elixir/BEAM.
-* 🧮 **Cálculo de Média**: Função pura para extrair os 6 primeiros dias de `temperature_2m_max` e calcular a média simples arredondada em 1 casa decimal.
-* 📺 **Saída Formatada**: Apresentação dos resultados na saída padrão no formato exigido.
-* 🧪 **Suíte de Testes com Mocks**: Isolamento completo de chamadas de rede nos testes utilizando `Mox` (baseado em `Behaviour`).
-* 🔁 **TDD & Git Event Store**: Histórico de commits granular seguindo o ciclo **Red -> Green -> Refactor** e a especificação **Conventional Commits**.
+* **Consumo de API Externa**: Integração com a API pública Open-Meteo (`GET /v1/forecast`).
+* **Processamento Concorrente**: Execução paralela sem bloqueios para múltiplas cidades utilizando `Task.async_stream/3` do Elixir/BEAM.
+* **Cálculo de Média**: Função pura para extrair os 6 primeiros dias de `temperature_2m_max` e calcular a média simples arredondada em 1 casa decimal.
+* **Saída Formatada**: Apresentação dos resultados na saída padrão no formato exigido.
+* **Suíte de Testes com Mocks**: Isolamento completo de chamadas de rede nos testes utilizando `Mox` (baseado em `Behaviour`).
+* **TDD & Git Event Store**: Histórico de commits granular seguindo o ciclo Red -> Green -> Refactor e a especificação Conventional Commits.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 * **Elixir** `~> 1.14+`
 * **Req** `~> 0.5.0` (Cliente HTTP moderno)
@@ -25,7 +25,7 @@ Aplicação backend em **Elixir** para consulta concorrente de previsão do temp
 
 ---
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 * **Elixir** (versão 1.14 ou superior) e **Erlang/OTP** instalados no ambiente.
 
@@ -36,7 +36,7 @@ elixir -v
 
 ---
 
-## 🚀 Como Executar a Aplicação
+## Como Executar a Aplicação
 
 ### 1. Clonar o Repositório e Instalar Dependências
 ```bash
@@ -59,7 +59,7 @@ Curitiba: 22.8°C
 
 ---
 
-## 🧪 Como Executar a Suíte de Testes
+## Como Executar a Suíte de Testes
 
 Para rodar todos os testes unitários e de integração:
 ```bash
@@ -73,7 +73,7 @@ mix format --check-formatted
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
 meteo_analysis/
@@ -103,11 +103,13 @@ meteo_analysis/
 
 ---
 
-## 📜 Histórico de Commits (Git Event Store)
+## Histórico de Commits (Git Event Store)
 
-O repositório foi construído seguindo rigorosamente o ciclo **TDD** e **Conventional Commits**:
+O repositório foi construído seguindo rigorosamente o ciclo TDD e Conventional Commits:
 
 ```text
+8927e44 docs: update KANBAN.md with all tasks completed
+32748ad docs: update REQUIREMENTS.md and README.md
 c063de7 feat(cli): connect entrypoint MeteoAnalysis.run/0
 412555c feat(formatter): implement output console formatter [GREEN]
 3012c2b test(formatter): add test for output string formatting [RED]
