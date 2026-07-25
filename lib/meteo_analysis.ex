@@ -3,9 +3,9 @@ defmodule MeteoAnalysis do
   Fachada publica (API Boundary) da aplicação Backend Elixir MeteoAnalysis.
   """
 
+  alias MeteoAnalysis.CLI.Formatter
   alias MeteoAnalysis.Domain.City
   alias MeteoAnalysis.Weather
-  alias MeteoAnalysis.CLI.Formatter
 
   @doc """
   Ponto de entrada principal da aplicação. Consulta a previsão das cidades padrão,

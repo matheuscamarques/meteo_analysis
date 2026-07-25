@@ -21,8 +21,6 @@ defmodule MeteoAnalysis.CLI.Formatter do
   """
   @spec format_all([{:ok, String.t(), float()} | {:error, String.t(), term()}]) :: String.t()
   def format_all(results) when is_list(results) do
-    results
-    |> Enum.map(&format_result/1)
-    |> Enum.join("\n")
+    Enum.map_join(results, "\n", &format_result/1)
   end
 end

@@ -2,9 +2,10 @@ defmodule MeteoAnalysis.Engine.ActorSystemTest do
   use ExUnit.Case, async: true
   import Mox
 
-  alias MeteoAnalysis.Domain.City
-  alias MeteoAnalysis.Engine.{Coordinator, Supervisor}
   alias MeteoAnalysis.Clients.ClientMock
+  alias MeteoAnalysis.Domain.City
+  alias MeteoAnalysis.Engine.Coordinator
+  alias MeteoAnalysis.Engine.Supervisor
 
   setup :set_mox_from_context
   setup :verify_on_exit!

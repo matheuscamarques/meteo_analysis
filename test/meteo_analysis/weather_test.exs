@@ -2,9 +2,9 @@ defmodule MeteoAnalysis.WeatherTest do
   use ExUnit.Case, async: true
   import Mox
 
+  alias MeteoAnalysis.Clients.ClientMock
   alias MeteoAnalysis.Domain.City
   alias MeteoAnalysis.Weather
-  alias MeteoAnalysis.Clients.ClientMock
 
   setup :set_mox_from_context
   setup :verify_on_exit!

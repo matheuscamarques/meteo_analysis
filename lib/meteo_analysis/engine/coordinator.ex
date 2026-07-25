@@ -3,6 +3,7 @@ defmodule MeteoAnalysis.Engine.Coordinator do
   Ator Coordenador responsavel por gerenciar atores trabalhadores dinamicos e agregar respostas.
   """
   use GenServer
+  @compile {:no_warn_undefined, Mox}
 
   alias MeteoAnalysis.Engine.{Supervisor, Worker}
 
@@ -84,7 +85,7 @@ defmodule MeteoAnalysis.Engine.Coordinator do
   defp allow_mox_if_needed(client, caller_pid, worker_pid) do
     if Code.ensure_loaded?(Mox) and function_exported?(Mox, :allow, 3) do
       try do
-        apply(Mox, :allow, [client, caller_pid, worker_pid])
+        Mox.allow(client, caller_pid, worker_pid)
       rescue
         _ -> :ok
       end

@@ -24,7 +24,8 @@ defmodule MeteoAnalysis.MixProject do
     [
       {:req, "~> 0.5.0"},
       {:jason, "~> 1.4"},
-      {:mox, "~> 1.1", only: :test}
+      {:mox, "~> 1.1", only: :test},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end
