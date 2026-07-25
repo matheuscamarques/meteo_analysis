@@ -7,7 +7,7 @@ defmodule MeteoAnalysis.Client.OpenMeteoTest do
 
   setup :verify_on_exit!
 
-  describe "fetch_forecast/1" do
+  describe "fetch_forecast/1 com Mock" do
     test "retorna a lista de temperaturas quando o mock responde com sucesso" do
       city = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
 
@@ -18,11 +18,16 @@ defmodule MeteoAnalysis.Client.OpenMeteoTest do
       assert {:ok, temps} = MeteoAnalysis.ClientMock.fetch_forecast(city)
       assert length(temps) == 6
     end
+  end
 
-    test "espera que o cliente real OpenMeteo falhe quando módulo ainda não implementado ou sem rede" do
+  describe "fetch_forecast/1 real (integração externa)" do
+    @tag :integration
+    test "retorna temperaturas reais da API Open-Meteo para São Paulo" do
       city = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
-      # Chama o módulo real que ainda não foi criado
-      assert OpenMeteo.fetch_forecast(city) == {:error, :not_implemented}
+
+      assert {:ok, temps} = OpenMeteo.fetch_forecast(city)
+      assert is_list(temps)
+      assert length(temps) >= 6
     end
   end
 end
