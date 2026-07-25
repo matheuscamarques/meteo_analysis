@@ -27,4 +27,16 @@ defmodule MeteoAnalysis.Domain.CalculatorTest do
       assert Calculator.calculate_average(nil, 6) == {:error, :insufficient_data}
     end
   end
+
+  describe "calculate_details/2" do
+    test "retorna o mapa completo da memoria de calculo das temperaturas" do
+      temps = [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]
+
+      assert {:ok, details} = Calculator.calculate_details(temps, 6)
+      assert details.daily_max == temps
+      assert details.sum == 171.0
+      assert details.count == 6
+      assert details.average == 28.5
+    end
+  end
 end

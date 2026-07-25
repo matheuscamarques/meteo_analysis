@@ -24,9 +24,21 @@ defmodule MeteoAnalysis.WeatherTest do
       results = Weather.process_cities([sp, bh, cur], ClientMock)
 
       assert length(results) == 3
-      assert {:ok, "São Paulo", 28.5} in results
-      assert {:ok, "Belo Horizonte", 27.8} in results
-      assert {:ok, "Curitiba", 22.1} in results
+
+      assert Enum.any?(results, fn
+               {:ok, "São Paulo", 28.5, _} -> true
+               _ -> false
+             end)
+
+      assert Enum.any?(results, fn
+               {:ok, "Belo Horizonte", 27.8, _} -> true
+               _ -> false
+             end)
+
+      assert Enum.any?(results, fn
+               {:ok, "Curitiba", 22.1, _} -> true
+               _ -> false
+             end)
     end
 
     test "retorna erro gracioso para cidade individual sem interromper as demais" do
@@ -40,7 +52,11 @@ defmodule MeteoAnalysis.WeatherTest do
 
       results = Weather.process_cities([sp, bh], ClientMock)
 
-      assert {:ok, "São Paulo", 28.5} in results
+      assert Enum.any?(results, fn
+               {:ok, "São Paulo", 28.5, _} -> true
+               _ -> false
+             end)
+
       assert {:error, "Belo Horizonte", :timeout} in results
     end
   end

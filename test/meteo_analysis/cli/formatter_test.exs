@@ -16,16 +16,31 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
     end
   end
 
-  describe "format_all/1" do
-    test "formata a lista completa de resultados separando por quebras de linha" do
+  describe "format_all/1 com HUD" do
+    test "formata o painel HUD completo e inclui o resumo dos resultados" do
+      details = %{
+        latitude: -23.55,
+        longitude: -46.63,
+        daily_max: [28.5, 29.3, 27.1, 26.8, 29.0, 30.3],
+        sum: 171.0,
+        count: 6
+      }
+
       results = [
-        {:ok, "São Paulo", 28.5},
-        {:ok, "Belo Horizonte", 27.8},
-        {:ok, "Curitiba", 22.1}
+        {:ok, "São Paulo", 28.5, details}
       ]
 
-      expected = "São Paulo: 28.5°C\nBelo Horizonte: 27.8°C\nCuritiba: 22.1°C"
-      assert Formatter.format_all(results) == expected
+      output = Formatter.format_all(results)
+
+      assert output =~ "METEO ANALYSIS - TERMINAL HUD"
+      assert output =~ "CIDADE: São Paulo"
+      assert output =~ "Latitude: -23.55 | Longitude: -46.63"
+      assert output =~ "[28.5°C, 29.3°C, 27.1°C, 26.8°C, 29.0°C, 30.3°C]"
+
+      assert output =~
+               "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
+
+      assert output =~ "São Paulo: 28.5°C"
     end
   end
 end

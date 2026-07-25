@@ -31,8 +31,16 @@ defmodule MeteoAnalysis.Engine.ActorSystemTest do
       results = Coordinator.process_cities([sp, bh], ClientMock)
 
       assert length(results) == 2
-      assert {:ok, "São Paulo", 28.5} in results
-      assert {:ok, "Belo Horizonte", 27.8} in results
+
+      assert Enum.any?(results, fn
+               {:ok, "São Paulo", 28.5, _} -> true
+               _ -> false
+             end)
+
+      assert Enum.any?(results, fn
+               {:ok, "Belo Horizonte", 27.8, _} -> true
+               _ -> false
+             end)
     end
   end
 end
