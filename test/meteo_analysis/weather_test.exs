@@ -13,16 +13,10 @@ defmodule MeteoAnalysis.WeatherTest do
       bh = %City{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94}
       cur = %City{name: "Curitiba", latitude: -25.43, longitude: -49.27}
 
-      expect(ClientMock, :fetch_forecast, fn ^sp ->
-        {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
-      end)
-
-      expect(ClientMock, :fetch_forecast, fn ^bh ->
-        {:ok, [27.0, 28.0, 27.5, 28.2, 27.8, 28.3]}
-      end)
-
-      expect(ClientMock, :fetch_forecast, fn ^cur ->
-        {:ok, [21.5, 22.0, 22.5, 21.8, 22.2, 22.6]}
+      expect(ClientMock, :fetch_forecast, 3, fn
+        %City{name: "São Paulo"} -> {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
+        %City{name: "Belo Horizonte"} -> {:ok, [27.0, 28.0, 27.5, 28.2, 27.8, 28.3]}
+        %City{name: "Curitiba"} -> {:ok, [21.5, 22.0, 22.5, 21.8, 22.2, 22.6]}
       end)
 
       results = Weather.process_cities([sp, bh, cur], ClientMock)
@@ -37,12 +31,9 @@ defmodule MeteoAnalysis.WeatherTest do
       sp = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
       bh = %City{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94}
 
-      expect(ClientMock, :fetch_forecast, fn ^sp ->
-        {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
-      end)
-
-      expect(ClientMock, :fetch_forecast, fn ^bh ->
-        {:error, :timeout}
+      expect(ClientMock, :fetch_forecast, 2, fn
+        %City{name: "São Paulo"} -> {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
+        %City{name: "Belo Horizonte"} -> {:error, :timeout}
       end)
 
       results = Weather.process_cities([sp, bh], ClientMock)
