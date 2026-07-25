@@ -4,7 +4,7 @@ defmodule MeteoAnalysis.Domain.CityTest do
   alias MeteoAnalysis.Domain.City
 
   describe "default_cities/0" do
-    test "retorna a lista com as 3 cidades padrao e suas coordenadas corretas" do
+    test "retorna a lista de cidades padrão lidas da configuração com suas coordenadas corretas" do
       cities = City.default_cities()
 
       assert length(cities) == 3
@@ -25,6 +25,18 @@ defmodule MeteoAnalysis.Domain.CityTest do
                name: "Curitiba",
                latitude: -25.43,
                longitude: -49.27
+             }
+    end
+  end
+
+  describe "new/1" do
+    test "instancia uma struct %City{} a partir de um mapa" do
+      city = City.new(%{name: "Porto Alegre", latitude: -30.03, longitude: -51.23})
+
+      assert city == %City{
+               name: "Porto Alegre",
+               latitude: -30.03,
+               longitude: -51.23
              }
     end
   end

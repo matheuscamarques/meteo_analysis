@@ -13,14 +13,28 @@ defmodule MeteoAnalysis.Domain.City do
         }
 
   @doc """
-  Retorna as 3 cidades brasileiras padrão configuradas com suas coordenadas geográficas.
+  Cria uma nova struct `%MeteoAnalysis.Domain.City{}` a partir de um mapa de atributos.
+  """
+  @spec new(map()) :: t()
+  def new(%{name: name, latitude: lat, longitude: lon}) do
+    %__MODULE__{name: name, latitude: lat, longitude: lon}
+  end
+
+  @doc """
+  Retorna a lista de cidades padrão lidas dinamicamente da configuração da aplicação (`config/config.exs`).
   """
   @spec default_cities() :: [t()]
   def default_cities do
+    :meteo_analisys
+    |> Application.get_env(:cities, fallback_cities())
+    |> Enum.map(&new/1)
+  end
+
+  defp fallback_cities do
     [
-      %__MODULE__{name: "São Paulo", latitude: -23.55, longitude: -46.63},
-      %__MODULE__{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94},
-      %__MODULE__{name: "Curitiba", latitude: -25.43, longitude: -49.27}
+      %{name: "São Paulo", latitude: -23.55, longitude: -46.63},
+      %{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94},
+      %{name: "Curitiba", latitude: -25.43, longitude: -49.27}
     ]
   end
 end
