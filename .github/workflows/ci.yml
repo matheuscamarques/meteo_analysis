@@ -1,4 +1,4 @@
-name: CI
+name: Parallel CI Pipeline
 
 on:
   push:
@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build, Lint & Test (Elixir/OTP)
+  lint-security-docs:
+    name: Lint, Security & Docs Audit
     runs-on: ubuntu-latest
 
     steps:
@@ -52,8 +52,97 @@ jobs:
     - name: Check Documentation & Spec Coverage (Doctor)
       run: mix doctor
 
+  test-suite:
+    name: Test Suite & Code Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Erlang and Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.17'
+        otp-version: '26'
+
+    - name: Restore Dependencies and Build Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
+    - name: Install Dependencies
+      run: mix deps.get
+
     - name: Run Test Suite, PBT & Code Coverage
       run: mix test --cover
+
+  version-matrix:
+    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }} Compatibility
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        elixir: ['1.17', '1.18']
+        otp: ['26', '27']
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Erlang and Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ matrix.elixir }}
+        otp-version: ${{ matrix.otp }}
+
+    - name: Restore Dependencies and Build Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-matrix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-matrix-${{ matrix.elixir }}-${{ matrix.otp }}-
+
+    - name: Install Dependencies
+      run: mix deps.get
+
+    - name: Run Test Suite
+      run: mix test
+
+  task-execution:
+    name: CLI Mix Task Verification
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Erlang and Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.17'
+        otp-version: '26'
+
+    - name: Restore Dependencies and Build Cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          deps
+          _build
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-
+
+    - name: Install Dependencies
+      run: mix deps.get
 
     - name: Verify Mix Task Execution
       run: mix meteo
