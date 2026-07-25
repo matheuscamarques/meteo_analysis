@@ -25,4 +25,20 @@ defmodule MeteoAnalysisTest do
     assert output =~ "Belo Horizonte: 27.8°C"
     assert output =~ "Curitiba: 22.1°C"
   end
+
+  test "run com cliente mock e cidades padrao" do
+    expect(ClientMock, :fetch_forecast, 3, fn
+      %City{name: "São Paulo"} -> {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
+      %City{name: "Belo Horizonte"} -> {:ok, [27.8, 28.0, 27.5, 28.2, 27.8, 27.5]}
+      %City{name: "Curitiba"} -> {:ok, [22.1, 22.0, 22.5, 21.8, 22.2, 22.0]}
+    end)
+
+    output = MeteoAnalysis.run(City.default_cities(), ClientMock)
+    assert output =~ "METEO ANALYSIS - TERMINAL HUD"
+  end
+
+  test "run sem argumentos executa com cidades padrao e API real" do
+    output = MeteoAnalysis.run()
+    assert output =~ "METEO ANALYSIS - TERMINAL HUD"
+  end
 end

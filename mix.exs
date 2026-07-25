@@ -7,7 +7,18 @@ defmodule MeteoAnalysis.MixProject do
       version: "0.1.0",
       elixir: "~> 1.20",
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls, summary: [threshold: 90]],
       deps: deps()
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -25,7 +36,8 @@ defmodule MeteoAnalysis.MixProject do
       {:req, "~> 0.5.0"},
       {:jason, "~> 1.4"},
       {:mox, "~> 1.1", only: :test},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 end

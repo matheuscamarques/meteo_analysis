@@ -62,13 +62,18 @@ defmodule MeteoAnalysis.Clients.OpenMeteoTest do
   end
 
   describe "fetch_forecast/1 real (integração externa)" do
-    @tag :integration
     test "retorna temperaturas reais da API Open-Meteo para São Paulo" do
       city = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
 
       assert {:ok, temps} = OpenMeteo.fetch_forecast(city)
       assert is_list(temps)
       assert length(temps) >= 6
+    end
+
+    test "retorna erro de HTTP 400 ou resposta invalida para coordenadas extremas fora do range" do
+      city = %City{name: "Invalida", latitude: 999.0, longitude: 999.0}
+
+      assert {:error, {:http_error, _status}} = OpenMeteo.fetch_forecast(city)
     end
   end
 end

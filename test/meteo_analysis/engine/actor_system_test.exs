@@ -42,5 +42,12 @@ defmodule MeteoAnalysis.Engine.ActorSystemTest do
                _ -> false
              end)
     end
+
+    test "trata mensagens com referencias invalidas ou desatualizadas graciosamente" do
+      invalid_ref = make_ref()
+      send(Coordinator, {:worker_result, invalid_ref, {:ok, "Desconhecida", 20.0}})
+      send(Coordinator, {:request_timeout, invalid_ref})
+      assert Process.alive?(Process.whereis(Coordinator))
+    end
   end
 end

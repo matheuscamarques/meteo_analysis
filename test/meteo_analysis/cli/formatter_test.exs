@@ -8,6 +8,7 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
       assert Formatter.format_result({:ok, "São Paulo", 28.5}) == "São Paulo: 28.5°C"
       assert Formatter.format_result({:ok, "Belo Horizonte", 27.8}) == "Belo Horizonte: 27.8°C"
       assert Formatter.format_result({:ok, "Curitiba", 22.1}) == "Curitiba: 22.1°C"
+      assert Formatter.format_result({:ok, "São Paulo", 28.5, %{}}) == "São Paulo: 28.5°C"
     end
 
     test "formata mensagens de erro de forma clara" do
@@ -39,10 +40,7 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
       assert output =~ "CIDADE: São Paulo"
       assert output =~ "Latitude: -23.55 | Longitude: -46.63"
       assert output =~ "[28.5°C, 29.3°C, 27.1°C, 26.8°C, 29.0°C, 30.3°C]"
-
-      assert output =~
-               "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
-
+      assert output =~ "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
       assert output =~ "São Paulo: 28.5°C"
     end
 
@@ -69,6 +67,18 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
       assert output =~ "Status            : Erro ao obter dados ({:network_error, :econnrefused})"
       assert output =~ "Belo Horizonte: Erro ao obter dados ({:http_error, 500})"
       assert output =~ "Curitiba: Erro ao obter dados ({:network_error, :econnrefused})"
+    end
+
+    test "formata bloco HUD para tupla simplificada de 3 elementos" do
+      assert Formatter.format_city_hud({:ok, "São Paulo", 28.5}) =~ "CIDADE: São Paulo"
+
+      assert Formatter.format_city_hud({:error, "São Paulo", :timeout}) =~
+               "Status            : Erro ao obter dados (:timeout)"
+    end
+
+    test "formata HUD quando o tempo de execução é omitido ou nulo" do
+      output = Formatter.format_all([{:ok, "São Paulo", 28.5}])
+      assert output =~ "Tempo de Execução : N/A"
     end
   end
 end

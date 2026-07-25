@@ -7,6 +7,7 @@ defmodule MeteoAnalysis.Domain.CalculatorTest do
     test "calcula a media dos 6 primeiros valores arredondando para 1 casa decimal" do
       temps = [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]
       assert Calculator.calculate_average(temps, 6) == {:ok, 28.5}
+      assert Calculator.calculate_average(temps) == {:ok, 28.5}
     end
 
     test "ignora os valores alem do 6º elemento" do
@@ -37,6 +38,18 @@ defmodule MeteoAnalysis.Domain.CalculatorTest do
       assert details.sum == 171.0
       assert details.count == 6
       assert details.average == 28.5
+
+      assert {:ok, _} = Calculator.calculate_details(temps)
+    end
+
+    test "retorna erro para lista vazia ou insuficiente em calculate_details" do
+      assert Calculator.calculate_details([], 6) == {:error, :insufficient_data}
+      assert Calculator.calculate_details([1.0, 2.0], 6) == {:error, :insufficient_data}
+    end
+
+    test "retorna erro para argumentos invalidos ou contagem invalida" do
+      assert Calculator.calculate_details(nil, 6) == {:error, :insufficient_data}
+      assert Calculator.calculate_details([1.0, 2.0], -1) == {:error, :insufficient_data}
     end
   end
 end
