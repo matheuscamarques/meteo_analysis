@@ -5,7 +5,7 @@ defmodule MeteoAnalysis.MixProject do
     [
       app: :meteo_analisys,
       version: "0.1.0",
-      elixir: "~> 1.20",
+      elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls, summary: [threshold: 90]],
       deps: deps()
