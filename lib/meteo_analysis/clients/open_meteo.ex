@@ -1,6 +1,6 @@
 defmodule MeteoAnalysis.Clients.OpenMeteo do
   @moduledoc """
-  Implementação real do cliente HTTP para consumo da API pública Open-Meteo.
+  Implementação real do cliente HTTP para consumo da API pública Open-Meteo com tratamento resiliente de erros.
   """
 
   @behaviour MeteoAnalysis.Clients.Behaviour
@@ -11,6 +11,7 @@ defmodule MeteoAnalysis.Clients.OpenMeteo do
 
   @doc """
   Realiza uma chamada HTTP GET para a Open-Meteo API obtendo a lista `temperature_2m_max`.
+  Trata erros de HTTP (4xx, 5xx), erros de transporte de rede e payloads malformados.
   """
   @impl true
   def fetch_forecast(%City{latitude: lat, longitude: lon}) do
@@ -26,11 +27,17 @@ defmodule MeteoAnalysis.Clients.OpenMeteo do
       when is_list(temps) ->
         {:ok, temps}
 
+      {:ok, %Req.Response{status: 200}} ->
+        {:error, :invalid_payload}
+
       {:ok, %Req.Response{status: status}} ->
         {:error, {:http_error, status}}
 
-      {:error, reason} ->
+      {:error, %Req.TransportError{reason: reason}} ->
         {:error, {:network_error, reason}}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 end

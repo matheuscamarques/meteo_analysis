@@ -16,7 +16,7 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
     end
   end
 
-  describe "format_all/2 com HUD, Data de Hoje e Tempo de Execução" do
+  describe "format_all/2 com HUD e Cenários de Falha" do
     test "formata o painel HUD completo contendo a data atual e o tempo de execucao" do
       details = %{
         latitude: -23.55,
@@ -44,6 +44,31 @@ defmodule MeteoAnalysis.CLI.FormatterTest do
                "Memória de Cálculo: (28.5 + 29.3 + 27.1 + 26.8 + 29.0 + 30.3) / 6 = 28.5°C"
 
       assert output =~ "São Paulo: 28.5°C"
+    end
+
+    test "renderiza blocos de erro no HUD quando ocorrem falhas de API ou rede" do
+      results = [
+        {:ok, "São Paulo", 28.5,
+         %{
+           latitude: -23.55,
+           longitude: -46.63,
+           daily_max: [28.5, 29.3, 27.1, 26.8, 29.0, 30.3],
+           sum: 171.0,
+           count: 6
+         }},
+        {:error, "Belo Horizonte", {:http_error, 500}},
+        {:error, "Curitiba", {:network_error, :econnrefused}}
+      ]
+
+      output = Formatter.format_all(results, 85.5)
+
+      assert output =~ "CIDADE: São Paulo"
+      assert output =~ "CIDADE: Belo Horizonte"
+      assert output =~ "Status            : Erro ao obter dados ({:http_error, 500})"
+      assert output =~ "CIDADE: Curitiba"
+      assert output =~ "Status            : Erro ao obter dados ({:network_error, :econnrefused})"
+      assert output =~ "Belo Horizonte: Erro ao obter dados ({:http_error, 500})"
+      assert output =~ "Curitiba: Erro ao obter dados ({:network_error, :econnrefused})"
     end
   end
 end
