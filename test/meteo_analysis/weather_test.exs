@@ -4,6 +4,7 @@ defmodule MeteoAnalysis.WeatherTest do
 
   alias MeteoAnalysis.{City, Weather, ClientMock}
 
+  setup :set_mox_from_context
   setup :verify_on_exit!
 
   describe "process_cities/2" do
@@ -30,6 +31,24 @@ defmodule MeteoAnalysis.WeatherTest do
       assert {:ok, "São Paulo", 28.5} in results
       assert {:ok, "Belo Horizonte", 27.8} in results
       assert {:ok, "Curitiba", 22.1} in results
+    end
+
+    test "retorna erro gracioso para cidade individual sem interromper as demais" do
+      sp = %City{name: "São Paulo", latitude: -23.55, longitude: -46.63}
+      bh = %City{name: "Belo Horizonte", latitude: -19.92, longitude: -43.94}
+
+      expect(ClientMock, :fetch_forecast, fn ^sp ->
+        {:ok, [28.5, 29.3, 27.1, 26.8, 29.0, 30.3]}
+      end)
+
+      expect(ClientMock, :fetch_forecast, fn ^bh ->
+        {:error, :timeout}
+      end)
+
+      results = Weather.process_cities([sp, bh], ClientMock)
+
+      assert {:ok, "São Paulo", 28.5} in results
+      assert {:error, "Belo Horizonte", :timeout} in results
     end
   end
 end
