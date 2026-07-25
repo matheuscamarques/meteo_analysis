@@ -11,6 +11,7 @@ defmodule MeteoAnalysis do
   Ponto de entrada principal da aplicação. Consulta a previsão das cidades padrão,
   calcula as médias, mede o tempo de execução e exibe a saída formatada no terminal.
   """
+  @spec run([City.t()], module() | nil) :: String.t()
   def run(
         cities \\ City.default_cities(),
         client \\ nil

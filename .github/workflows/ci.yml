@@ -46,7 +46,13 @@ jobs:
     - name: Run Static Code Analysis (Credo)
       run: mix credo --strict
 
-    - name: Run Test Suite & Code Coverage
+    - name: Run Security Static Audit (Sobelow)
+      run: mix sobelow
+
+    - name: Check Documentation & Spec Coverage (Doctor)
+      run: mix doctor
+
+    - name: Run Test Suite, PBT & Code Coverage
       run: mix test --cover
 
     - name: Verify Mix Task Execution
