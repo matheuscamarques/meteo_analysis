@@ -1,0 +1,29 @@
+Generated meteo_analisys app
+
+19:22:50.709 [warning] retry: got exception, will retry in 1000ms, 3 attempts left
+
+19:22:50.709 [warning] retry: got exception, will retry in 1000ms, 3 attempts left
+
+19:22:50.709 [warning] retry: got exception, will retry in 1000ms, 3 attempts left
+
+19:22:50.718 [warning] ** (Req.TransportError) timeout
+
+19:22:50.718 [warning] ** (Req.TransportError) timeout
+
+19:22:50.718 [warning] ** (Req.TransportError) timeout
+================================================================================
+                       METEO ANALYSIS - TERMINAL HUD                            
+================================================================================
+ Data de Execução  : 24/11/2026                                             
+ Tempo de Execução : 10003.03 ms                                         
+ Fonte de Dados    : Open-Meteo API (https://open-meteo.com)                    
+ Modelo Concorrente: Atores OTP (DynamicSupervisor + GenServers)               
+ Janela Analisada  : 6 Dias (Hoje + 5 Dias)                                    
+================================================================================
+
+
+================================================================================
+ RESUMO DOS RESULTADOS CALCULADOS
+================================================================================
+
+================================================================================
